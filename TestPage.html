@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="message">
+    <table id="user_table" border="1">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>邮箱</th>
+        </tr>
+        </thead>
+        <tbody id="user_table_body">
+
+        </tbody>
+    </table>
+    <button id="prev_page">上一页</button>
+    <button id="next_page">下一页</button>
+</div>
+</body>
+</html>
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript">
+    var start = 0;
+    var size = 10;
+    $(function () {
+            $.ajax({
+                url: "http://localhost:8080/page_100w_war/test",
+                method: "post",
+                data: {'start': start, 'size': size},
+                xhrFields: {
+                    withCredentials: true //允许跨域带Cookie
+                },
+                success: function (result) {
+                    // $("#message").html(result);
+                    for (var i = 0; i < result.length; i++) {
+                        var trTemp = $("<tr id='tr" + result[i].id + "'></tr>");
+                        trTemp.append("<td>" + result[i].id + "</td>");
+                        trTemp.append("<td>" + result[i].name + "</td>");
+                        trTemp.append("<td>" + result[i].age + "</td>");
+                        trTemp.append("<td>" + result[i].email + "</td>");
+                        trTemp.appendTo("#clazz_table_body");
+                    }
+                },
+                error: function () {
+                    window.location.href = "./TestCors.html";
+                }
+            })
+        },
+        $("#next_page").click(function pageReq() {
+            $.ajax({
+                    url: "http://localhost:8080/page_100w_war/test",
+                    method: "post",
+                    data: {'start': start += 1, 'size': size},
+                    xhrFields: {
+                        withCredentials: true //允许跨域带Cookie
+                    },
+                    success: function (result) {
+                        // $("#message").html(result);
+                        $("#user_table_body").empty();
+                        for (var i = 0; i < result.length; i++) {
+                            var trTemp = $("<tr id='tr" + result[i].id + "'></tr>");
+                            trTemp.append("<td>" + result[i].id + "</td>");
+                            trTemp.append("<td>" + result[i].name + "</td>");
+                            trTemp.append("<td>" + result[i].age + "</td>");
+                            trTemp.append("<td>" + result[i].email + "</td>");
+                            trTemp.appendTo("#user_table_body");
+                        }
+                    },
+                    error: function () {
+                        window.location.href = "./TestCors.html";
+                    }
+                }
+            )
+        }),
+        $("#prev_page").click(function pageReq() {
+            var start_tmp = start - 1;
+            if (start_tmp <= 0) {
+                alert("已经是第一页了哦~~~~~");
+                return;
+            }
+            $.ajax({
+                    url: "http://localhost:8080/page_100w_war/test",
+                    method: "post",
+                    data: {'start': start -= 1, 'size': size},
+                    xhrFields: {
+                        withCredentials: true //允许跨域带Cookie
+                    },
+                    success: function (result) {
+                        // $("#message").html(result);
+                        $("#user_table_body").empty();
+                        for (var i = 0; i < result.length; i++) {
+                            var trTemp = $("<tr id='tr" + result[i].id + "'></tr>");
+                            trTemp.append("<td>" + result[i].id + "</td>");
+                            trTemp.append("<td>" + result[i].name + "</td>");
+                            trTemp.append("<td>" + result[i].age + "</td>");
+                            trTemp.append("<td>" + result[i].email + "</td>");
+                            trTemp.appendTo("#user_table_body");
+                        }
+                    },
+                    error: function () {
+                        window.location.href = "./TestCors.html";
+                    }
+                }
+            )
+        }));
+</script>
